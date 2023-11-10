@@ -28,6 +28,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s 
 
 # install crossplane
+helm repo add crossplane-stable https://charts.crossplane.io/stable
 helm upgrade --install crossplane --namespace crossplane-system --create-namespace crossplane-stable/crossplane --set args='{--enable-external-secret-stores}' --wait
 
 # install vault ess plugin
@@ -77,21 +78,21 @@ kubectl create -f - <<- EOF
 EOF
 
 # configure provider-azure for crossplane
-waitfor default crd providerconfigs.azure.upbound.io
-kubectl wait crd/providerconfigs.azure.upbound.io --for=condition=Established --timeout=1m
-kubectl create -f - <<- EOF
-    apiVersion: azure.upbound.io/v1beta1
-    kind: ProviderConfig
-    metadata:
-      name: default
-    spec:
-      credentials:
-        source: Secret
-        secretRef:
-          namespace: crossplane-system
-          name: azure-secret
-          key: credentials    
-EOF
+# waitfor default crd providerconfigs.azure.upbound.io
+#kubectl wait crd/providerconfigs.azure.upbound.io --for=condition=Established --timeout=1m
+#kubectl create -f - <<- EOF
+#    apiVersion: azure.upbound.io/v1beta1
+#    kind: ProviderConfig
+#    metadata:
+#      name: default
+#    spec:
+#      credentials:
+#        source: Secret
+#        secretRef:
+#          namespace: crossplane-system
+#          name: azure-secret
+#          key: credentials    
+#EOF
 
 # configure provider-aws for crossplane
 waitfor default crd providerconfigs.aws.upbound.io
@@ -162,16 +163,16 @@ kubectl create -f - <<-EOF
       VAULT_TOKEN: ${VAULT_TOKEN}
 EOF
 
-kubectl create -f - <<-EOF
-    apiVersion: v1
-    kind: Secret
-    metadata:
-      name: azure-secret
-      namespace: crossplane-system
-    stringData:
-      credentials: |
-        ${AZURE_CREDENTIALS}
-EOF
+#kubectl create -f - <<-EOF
+#    apiVersion: v1
+#    kind: Secret
+#    metadata:
+#      name: azure-secret
+#      namespace: crossplane-system
+#    stringData:
+#      credentials: |
+#        ${AZURE_CREDENTIALS}
+#EOF
 
 kubectl create -f - <<-EOF
     apiVersion: v1
