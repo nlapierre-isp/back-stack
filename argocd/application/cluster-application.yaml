@@ -9,6 +9,14 @@ spec:
     repoURL: repository
     path: demo/clusters
     targetRevision: HEAD
-  destination: 
+  destination:
     name: in-cluster
     namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
