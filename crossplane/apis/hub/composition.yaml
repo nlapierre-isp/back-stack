@@ -150,7 +150,7 @@ spec:
                     name: in-cluster
                     namespace: default
                   syncPolicy:
-                    automated: retry controlled using `retry` field.
+                    automated:
                       prune: true
                       selfHeal: true
                       allowEmpty: true
