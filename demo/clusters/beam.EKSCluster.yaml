@@ -1,0 +1,22 @@
+apiVersion: backstack.cncf.io/v1alpha1
+kind: EKSCluster
+metadata:
+  name: beam
+  namespace: default
+spec:
+  parameters:
+    id: beam
+    region: us-west-2
+    deletionPolicy: Delete
+    iam:
+      roleArn: 
+    version: "1.28"
+    nodes:
+      count: 1
+      instanceType: t3.small
+  writeConnectionSecretToRef:
+    name: beam-kubeconfig
+  publishConnectionDetailsTo:
+    name: beam/beam-kubeconfig
+    configRef:
+      name: vault
