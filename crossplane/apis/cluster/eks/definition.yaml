@@ -56,6 +56,13 @@ spec:
                     - "1.25"
                     - "1.24"
                     default: "1.28"
+                  deletionPolicy:
+                    type: string
+                    description: The crossplane deletion policy for the cluster
+                    enum:
+                    - "Orphan"
+                    - "Delete"
+                    default: "Orphan"
                   nodes:
                     type: object
                     description: Cluster node configuration parameters.

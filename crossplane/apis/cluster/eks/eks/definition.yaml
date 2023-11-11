@@ -48,6 +48,13 @@ spec:
                     - "1.25"
                     - "1.24"
                     default: "1.28"
+                  deletionPolicy:
+                    description: Crossplane deletion strategy
+                    type: string
+                    enum:
+                    - "Orphan"
+                    - "Delete"
+                    default: "Orphan"
                   subnetIds:
                     type: array
                     items:

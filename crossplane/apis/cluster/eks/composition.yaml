@@ -51,6 +51,8 @@ spec:
           toFieldPath: spec.parameters.version
         - fromFieldPath: spec.parameters.nodes.count
           toFieldPath: spec.parameters.nodes.count
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.parameters.deletionPolicy
         - fromFieldPath: spec.parameters.nodes.instanceType
           toFieldPath: spec.parameters.nodes.instanceType
         - fromFieldPath: spec.parameters.iam.roleArn

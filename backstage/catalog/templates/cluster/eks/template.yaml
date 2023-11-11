@@ -39,6 +39,14 @@ spec:
             - "1.26"
             - "1.25"
             - "1.24"
+        deletion_policy:
+          title: Version
+          type: string
+          description: Crossplane deletion strategy
+          default: "Orphan"
+          enum:
+            - "Orphan"
+            - "Delete"
         nodes_count:
           title: Node Group Size
           type: integer
@@ -75,6 +83,7 @@ spec:
           cluster_id: ${{ parameters.cluster_id }}
           region: ${{ parameters.region }}
           version: ${{ parameters.version }}
+          deletion_policy: ${{ parameters.deletion_policy }}
           iam_role_arn: ${{ parameters.iam_role_arn }}
           nodes_count: ${{ parameters.nodes_count }}
           nodes_instance_type: ${{ parameters.nodes_instance_type }}

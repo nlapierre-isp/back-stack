@@ -69,6 +69,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.forProvider.deletionPolicy
         - fromFieldPath: spec.parameters.subnetIds
           toFieldPath: spec.forProvider.vpcConfig[0].subnetIds
         - fromFieldPath: spec.parameters.version
