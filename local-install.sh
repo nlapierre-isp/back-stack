@@ -2,30 +2,25 @@
 # import helpers
 . scripts/common.sh
 
-# set up kind cluster
-kind create cluster --name backstack --wait 5m --config=- <<- EOF
-  kind: Cluster
-  apiVersion: kind.x-k8s.io/v1alpha4
-  nodes:
-  - role: control-plane
-    kubeadmConfigPatches:
-    - |
-      kind: InitConfiguration
-      nodeRegistration:
-        kubeletExtraArgs:
-          node-labels: "ingress-ready=true"        
-    extraPortMappings:
-    - containerPort: 80
-      hostPort: 80
-      protocol: TCP
-    - containerPort: 443
-      hostPort: 443
-      protocol: TCP
-EOF
+# Create cluster and registry
+k3d registry create backstack.localhost --port 5000
+k3d cluster create backstack --registry-use k3d-backstack.localhost:5000 --agents 1 -p 80:80@agent:0 -p 443:443@agent:0
+
+# Build local crossplane config
+# Export docker default platform. The configuration will not install with arm
+# plaform architecture
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+crossplane build configuration --package-root=crossplane --name=backstack.xpkg
+#1,14 command
+#crossplane xpkg build --package-file=crossplane/backstack.xpkg --package-root=crossplane
+# Push local crossplane config to local registry
+#1.14 command
+#crossplane xpkg push -f crossplane/backstack.xpkg "localhost:5000/backstack:0.0.1"
+crossplane push configuration --package crossplane/backstack.xpkg "localhost:5000/backstack:0.0.1"
 
 # configure ingress
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/kind/deploy.yaml
-kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s 
+#kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud/deploy.yaml
+#kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s 
 
 # install crossplane
 helm repo add crossplane-stable https://charts.crossplane.io/stable
@@ -43,7 +38,7 @@ kubectl apply -f - <<-EOF
     metadata:
       name: back-stack
     spec:
-      package: ghcr.io/opendev-ie/back-stack-configuration:v1.0.3
+      package: k3d-backstack.localhost:5000/backstack:0.0.1
 EOF
 
 
