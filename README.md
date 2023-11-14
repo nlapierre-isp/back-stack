@@ -31,4 +31,4 @@ For a local install, you need kind installed and a bash-compatible shell.
   ```
   make clean
   ```
-  Note that this will NOT resources created in AWS.
+  Note that this will NOT remove resources created in AWS.
