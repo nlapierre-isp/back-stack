@@ -1,18 +1,17 @@
- CROSSPLANE_CLI_VERSION="v1.13.2"
+CROSSPLANE_CLI_VERSION="v1.13.2"
 
 .PHONY: install-crossplane-cli
 install-crossplane-cli:
-	@if ! command -v crossplane &> /dev/null; then \
-  echo "Installing crossplane cli in /usr/local/bin directory"; \
-  cd scripts; \
-  export XP_VERSION="${CROSSPLANE_CLI_VERSION}" && curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh && sudo mv crossplane /usr/local/bin; \
-  cd .. ;\
-fi
-	@if [ "$(shell crossplane --version)" != "${CROSSPLANE_CLI_VERSION}" ]; then \
-  echo "Found crossplane version $(shell crossplane --version)  Installing crossplane version ${CROSSPLANE_CLI_VERSION} in /usr/local/bin directory instead"; \
-  cd scripts; \
-  export XP_VERSION="${CROSSPLANE_CLI_VERSION}" && curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh && sudo mv crossplane /usr/local/bin; \
-  cd .. ;\
+	@if ! command -v crossplane 1> /dev/null 2> /dev/null; then \
+    echo "Installing crossplane cli in ${HOME}/.local/bin directory"; \
+    cd scripts; \
+    export XP_VERSION=${CROSSPLANE_CLI_VERSION} && curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh && mv crossplane ${HOME}/.local/bin/; \
+    cd .. ;\
+  elif [ "$(shell crossplane --version)" != "${CROSSPLANE_CLI_VERSION}" ]; then \
+    echo "Found crossplane version $(shell crossplane --version)  Installing crossplane version ${CROSSPLANE_CLI_VERSION} in ${HOME}/.local/bin directory instead"; \
+    cd scripts; \
+    export XP_VERSION=${CROSSPLANE_CLI_VERSION} && curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh && mv crossplane ${HOME}/.local/bin/; \
+    cd .. ;\
 fi
 
 .PHONY: asdf-install
