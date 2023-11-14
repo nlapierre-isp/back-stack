@@ -8,16 +8,12 @@ install-crossplane-cli:
   export XP_VERSION="${CROSSPLANE_CLI_VERSION}" && curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh && sudo mv crossplane /usr/local/bin; \
   cd .. ;\
 fi
-	@if [ "$(crossplane --version)" != "${CROSSPLANE_CLI_VERSION}" ]; then \
-  echo "Installing crossplane version ${CROSSPLANE_CLI_VERSION} in /usr/local/bin directory"; \
+	@if [ "$(shell crossplane --version)" != "${CROSSPLANE_CLI_VERSION}" ]; then \
+  echo "Found crossplane version $(shell crossplane --version)  Installing crossplane version ${CROSSPLANE_CLI_VERSION} in /usr/local/bin directory instead"; \
   cd scripts; \
   export XP_VERSION="${CROSSPLANE_CLI_VERSION}" && curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh && sudo mv crossplane /usr/local/bin; \
   cd .. ;\
 fi
-
-.PHONY: crossplane-config
-crossplane-config: install-crossplane-cli
-	echo "hi"
 
 .PHONY: asdf-install
 asdf-install:
@@ -30,8 +26,8 @@ done < .tool-versions
 
 .PHONY: clean
 clean:
-	k3d registry delete k3d-backstack.localhost
-	k3d cluster delete backstack
+	@k3d cluster delete backstack > /dev/null || true;
+	@k3d registry delete k3d-backstack.localhost 2> /dev/null || true;
 
 .PHONY: up
 up: clean install-crossplane-cli asdf-install
