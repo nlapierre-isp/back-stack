@@ -1,0 +1,22 @@
+apiVersion: backstack.cncf.io/v1alpha1
+kind: EKSCluster
+metadata:
+  name: test-cluster-demo
+  namespace: default
+spec:
+  parameters:
+    id: test-cluster-demo
+    region: us-west-2
+    deletionPolicy: Delete
+    iam:
+      roleArn: 
+    version: "1.28"
+    nodes:
+      count: 1
+      instanceType: t3.small
+  writeConnectionSecretToRef:
+    name: test-cluster-demo-kubeconfig
+  publishConnectionDetailsTo:
+    name: test-cluster-demo/test-cluster-demo-kubeconfig
+    configRef:
+      name: vault
